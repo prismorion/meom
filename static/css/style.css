@@ -1,0 +1,289 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {    
+    background-color: #eae7dc;
+    color: #636262;
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #fff;
+    /*color: #e85a4f;*/
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    border-bottom: 3px solid #
+}
+
+header h1 {
+    margin-right: 20px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 200px;
+    overflow: hidden;
+}
+
+.logo img {
+    width: 100%;
+    display: block;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h2 {
+    color: #e85a4f;
+    margin-bottom: 20px;
+}
+
+p {
+    color: #636262;
+}
+
+.description {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 3px solid #d8c3a5;
+}
+
+.warning{
+    padding-left: 10px;
+    margin: 20px 0;
+}
+
+.description ul{
+    color: #636262;
+}
+
+.description li{
+    margin-left: 2em;
+}
+
+.description b{
+    color: #e98074;
+}
+
+.description li::marker{
+    color: #e98074;
+}
+
+.description h2{
+    margin-bottom: 10px;
+}
+
+.main-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-menu li {
+    padding: 10px;
+}
+
+.main-menu a {
+    color: #636262;
+    text-decoration: none;
+    border-radius: 1em;
+    border: 3px solid #d8c3a5;
+    font-weight: bold;
+    transition: border 0.3s ease;
+    padding: 7px 10px;
+}
+
+.main-menu a:hover {
+    border: 3px solid #e85a4f;
+}
+
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1 1 auto;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.footer {
+    background-color: #d8c3a5;
+    color: #636262;
+    text-align: center;
+    padding: 20px;
+}
+
+.currency-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.currency-card {
+    width: 150px;
+    border: 2px solid #d8c3a5;
+    border-radius: 8px;
+    text-align: center;
+    padding: 15px;
+    background-color: #f2f2f2;
+}
+
+.currency-card h3 {
+    font-size: 1.2em;
+    color: #e85a4f;
+}
+
+.currency-card .rate {
+    font-size: 1em;
+    color: #636262;
+}
+
+.exchange-calculator {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid #d8c3a5;
+    border-radius: 8px;
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+.exchange-calculator label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #636262;
+}
+
+.exchange-calculator input,
+.exchange-calculator select {
+    width: 80%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #d8c3a5;
+}
+
+.exchange-calculator button {
+    background-color: #e85a4f;
+    color: #fff;
+    border: 3px solid #f2f2f2;
+    padding: 10px 20px;
+    border-radius: 1em;
+    margin-top: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+.exchange-calculator button:hover {
+    background-color: #f2f2f2;
+    color: #636262;
+    border: 3px solid #e85a4f;
+}
+
+.result-display {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #636262;
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 10px;
+    color: #e85a4f;
+}
+
+.map-container {
+    width: 100%;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 400px;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header h1 {
+        margin-right: 0;
+    }
+
+    .logo-container {
+        margin-right: 20px;
+    }
+
+    .main-menu {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    nav {
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+
+    .main-menu {
+        display: none;
+    }
+
+    nav.open .main-menu {
+        display: flex;
+    }
+
+    nav.open .menu-toggle {
+        display: flex;
+        color: #636262;
+    }
+
+    .map-container iframe {
+        height: 300px;
+    }
+}

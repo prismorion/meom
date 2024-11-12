@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="static/image/icon.ico" type="image/ico">
+    <script src="static/js/toggleMenu.js"></script>
+    <script src="https://www.cbr-xml-daily.ru/money.js"></script> 
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="static/image/logo.png" alt="MCHS Logo">
+                </div>
+            </div>
+            <nav>
+                <div class="menu-toggle" onclick="toggleMenu()"><b>☰</b></div>
+                <ul class="main-menu">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="#">Лабиринты</a></li>
+                    <li><a href="#">Статистика</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="main">
+            <div class="description">
+                <h2>О нас</h2>
+                <p>Добро пожаловать на сайт <b>"Пункт обмена валют"</b> — удобный сервис для быстрого и безопасного обмена иностранных валют. У нас вы всегда сможете узнать актуальные курсы, рассчитать сумму обмена, а также найти всю необходимую контактную информацию.</p>
+                <p><ul><b>Наши услуги:</b>
+                    <li><b>Актуальные курсы валют</b> — следите за изменениями курсов в режиме реального времени и выбирайте оптимальный момент для обмена.</li>
+                    <li><b>Калькулятор валют</b> — рассчитайте сумму обмена с учетом актуального курса и убедитесь в выгодности операции.</li>
+                    <li><b>Контактная информация</b> — легко свяжитесь с нами для уточнения деталей или уточните местоположение нашего пункта.</li>
+                </ul></p>
+                <p class="warning"><b>Пожалуйста, обратите внимание: мы принимаем иностранные деньги только в наличной форме.</b></p>
+                <p>Мы ценим ваше время и предлагаем выгодные курсы и оперативное обслуживание. Будем рады видеть вас в нашем пункте обмена валют!</p>                
+            </div>
+            
+            <h2 align = center>Курсы валют к рублю</h2>
+            <div class="currency-container" id="currency-rates"></div>
+        </div>
+
+        <div class="footer">
+            &copy; 2024 Пункт обмена валют | Милькин Святослав Николаевич
+        </div>
+    </div>
+
+    <script src="static/js/scriptIndex.js"></script>
+</body>
+</html>
