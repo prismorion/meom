@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабиринт</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="static/image/icon.ico" type="image/ico">
+</head>
+<body style="background-color: #fff">
+    <div class="maze">
+        <div class="navMaze">
+            <a href="index.html">На Главную</a>
+        </div>
+
+        <div class="columnMaze">
+            <div id="timer">Время: 0 сек</div>
+            <canvas id="mazeCanvas" width="500" height="500"></canvas>
+        </div>
+
+        <div class="settingsMaze">
+            <label for="difficulty">Выбор уровня:</label>
+            <select id="difficulty" onchange="selectDifficulty()">
+                <option value="15">15 x 15</option>
+                <option value="27">27 x 27</option>
+                <option value="43">43 x 43</option>
+                <option value="77">77 x 77</option>
+                <option value="95">95 x 95</option>
+            </select>
+            <button onclick="generateMaze()">Генерировать лабиринт</button>
+            <button onclick="restartGame()">Рестарт</button>
+        </div>
+
+        <div id="statModal" class="modal">
+            <div class="modal-content">
+                <h2>Вы прошли лабиринт!</h2>
+                <form id="resultForm">
+                    <div class="result">
+                        <div class="statDifficulty"></div>
+                        <div class="statTime"></div>                    
+                    </div>
+                    <a href="index.html" onclick="closeModal('stat')">На Главную</a>
+                    <button onclick="generateMaze()">Генерировать лабиринт</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'block';
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'none';
+        }
+
+        const canvas = document.getElementById('mazeCanvas');
+        const ctx = canvas.getContext('2d');
+        const tileSize = 500;
+        let maze = [];
+        let mazeSize = parseInt(document.getElementById('difficulty').value);
+        let player = { x: 0, y: 1 };
+        let start = { x: 0, y: 1 };
+        let exit;
+        let timer = 0;
+        let intervalId = null;
+        let timerRunning = false;
+        let flag = true;
+
+        function selectDifficulty() {
+            mazeSize = parseInt(document.getElementById('difficulty').value);
+            generateMaze();
+        }
+
+        function generateMaze() {
+            flag = true;
+            closeModal('stat');
+            clearInterval(intervalId);
+            timer = 0;
+            timerRunning = false;
+            document.getElementById('timer').textContent = "Время: 0 сек";
+            player = { x: start.x, y: start.y };
+            exit = { x: mazeSize - 1, y: mazeSize - 2 };
+
+            fetch(`http://127.0.0.1:8000/levels?row_count=${mazeSize}&column_count=${mazeSize}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(json => {
+                maze = json;
+                drawMaze();
+            })
+            .catch(error => console.error(error));
+        }
+
+
+        function drawMaze() {
+            const cellSize = tileSize / mazeSize;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let y = 0; y < mazeSize; y++) {
+                for (let x = 0; x < mazeSize; x++) {
+                    ctx.fillStyle = maze[y][x] === 1 ? 'black' : 'white';
+                    ctx.fillRect(x * cellSize, y * cellSize, Math.trunc(cellSize + 1), Math.trunc(cellSize + 1));
+                }
+            }
+            drawPlayer();
+        }
+
+        function drawPlayer() {
+            const cellSize = tileSize / mazeSize;
+            ctx.fillStyle = '#d9a400';  // Менее яркий и более насыщенный цвет
+            ctx.fillRect(player.x * cellSize, player.y * cellSize, cellSize, cellSize);
+        }
+
+        function restartGame() {
+            player = { x: start.x, y: start.y };
+            drawMaze();
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if(flag){
+                if (!timerRunning) startTimer();
+                if (event.key === 'ArrowUp') movePlayer(0, -1);
+                if (event.key === 'ArrowDown') movePlayer(0, 1);
+                if (event.key === 'ArrowLeft') movePlayer(-1, 0);
+                if (event.key === 'ArrowRight') movePlayer(1, 0);
+            }
+        });
+
+        function movePlayer(dx, dy) {
+            const newX = player.x + dx;
+            const newY = player.y + dy;
+
+            if (newX >= 0 && newX < mazeSize && newY >= 0 && newY < mazeSize && maze[newY][newX] === 0) {
+                player.x = newX;
+                player.y = newY;
+                drawMaze();
+            }
+
+            if (player.x === exit.x && player.y === exit.y) {
+                clearInterval(intervalId);
+
+                flag = false;
+                document.querySelector(".statDifficulty").textContent = `Сложность: ${mazeSize} x ${mazeSize}`;
+                document.querySelector(".statTime").textContent = `Время: ${timer} сек`;
+
+                saveGameResult(mazeSize, timer);
+                openModal('stat');
+            }
+        }
+
+        function startTimer() {
+            timerRunning = true;
+            intervalId = setInterval(() => {
+                timer++;
+                document.getElementById('timer').textContent = `Время: ${timer} сек`;
+            }, 1000);
+        }
+
+        function saveGameResult(mazeSize, timer) {
+            const data = {
+                row_count: mazeSize,
+                column_count: mazeSize,
+                duration: timer
+            }
+            fetch('http://127.0.0.1:8000/statistics', {
+                method: 'POST',
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('HTTP error, status = ' + response.status);
+                }
+                return response.json();
+            })
+            .then((json) => {
+                console.log(json);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+
+        window.onload = generateMaze;
+    </script>
+</body>
+</html>

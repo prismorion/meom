@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="static/image/icon.ico" type="image/ico">
+    <script src="static/js/toggleMenu.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="static/image/logo.png" alt="MCHS Logo">
+                </div>
+            </div>
+            <nav>
+                <div class="menu-toggle" onclick="toggleMenu()"><h3><b>☰</b></h3></div>
+                <ul class="main-menu"></ul>
+            </nav>
+        </header>
+
+        <div class="main">
+            <div class="description">
+                <div class="descriptionTitle">
+                    <h2><b>Контакты разработчиков проекта Meom</b></h2>
+                </div>
+                <div class="descriptionText">
+                    <div class="descriptionBox">
+                        <div class="textBlock" style="text-align: left">
+                            <div class="developerName">
+                                <b>Пономаренко Олег Александрович</b>
+                                <p>Frontend-разработчик</p>
+                            </div>
+                            <div class="developerDescription">
+                                <p style="white-space: nowrap"><b>Телефон:</b> +7 978 769-53-61</p>
+                                <p><b>Адрес:</b> г. Краснодар, ул. 1 Мая, 188</p>
+                                <p><b>GitHub:</b> <a href="https://github.com/prismorion">https://github.com/prismorion</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="descriptionBox">
+                        <div class="textBlock" id="contactBlock">
+                            <div class="developerName">
+                                <b>Васильев Семен Дмитриевич</b>
+                                <p>Backend-разработчик</p>
+                            </div>
+                            <div class="developerDescription">
+                                <p style="white-space: nowrap"><b>Телефон:</b> +7 989 804-18-70</p>
+                                <p><b>Адрес:</b> г. Краснодар, ул. Рашпилевская, 142</p>
+                                <p><b>GitHub:</b> <a href="https://github.com/blackmamba2004">https://github.com/blackmamba2004</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>       
+            </div>
+        </div>
+
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('login')">&times;</span>
+                <h2>Вход</h2>
+                <form id="loginForm">
+                    <input type="text" class="input-row" id="loginEmail" placeholder="Email пользователя" required>
+                    <input type="password" class="input-row" id="loginPassword" placeholder="Пароль" required>
+                    <button type="button" class="button-row" onclick="login()">Войти</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('register')">&times;</span>
+                <h2>Регистрация</h2>
+                <form id="registerForm">
+                    <input type="text" class="input-row" id="registerEmail" placeholder="Email пользователя" required>
+                    <input type="password" class="input-row" id="registerPassword" placeholder="Пароль" required>
+                    <input type="password" class="input-row" id="confirmPassword" placeholder="Подтвердите пароль" required>
+                    <button type="button" class="button-row" onclick="register()">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer">
+            &copy; 2024 Meom | Пономаренко Олег Александрович & Васильев Семен Дмитриевич
+        </div>
+    </div>
+
+    <script>
+        function openModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'block';
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'none';
+            clearForm(type);
+        }
+
+        function clearForm(type) {
+            const form = type === 'login' ? document.getElementById('loginForm') : document.getElementById('registerForm');
+            form.reset();
+        }
+
+        function updateNavigation() {
+            const token = localStorage.getItem('token');
+            const menu = document.querySelector('.main-menu');
+            if (token) {
+                menu.innerHTML = `
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="maze.html">Лабиринты</a></li>
+                    <li><a href="#">Статистика</a></li>
+                    <li><a href="#" onclick="logout()">Выйти</a></li>
+                `;
+            } else {
+                menu.innerHTML = `
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="#" onclick="openModal('login')">Вход</a></li>
+                    <li><a href="#" onclick="openModal('register')">Регистрация</a></li>
+                `;
+            }
+        }
+
+        function register() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert("Пароли не совпадают.");
+                return;
+            }
+
+            const data = {
+                email: email,
+                password: password
+            };
+
+            fetch('http://127.0.0.1:8000/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        alert('Ошибка регистрации');
+                        throw new Error('HTTP error, status = ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let token = 'Bearer ' + data.access_token;
+                    localStorage.setItem('token', token);
+                    closeModal('register');
+                    updateNavigation();
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const data = {
+                email: email,
+                password: password
+            };
+
+            fetch('http://127.0.0.1:8000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        alert('Ошибка входа');
+                        throw new Error('HTTP error, status = ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let token = 'Bearer ' + data.access_token;
+                    localStorage.setItem('token', token);
+                    closeModal('login');
+                    updateNavigation();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            updateNavigation();
+        }
+
+        window.onload = () => {
+            updateNavigation();
+        };
+    </script>
+</body>
+</html>

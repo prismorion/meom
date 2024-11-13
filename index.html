@@ -45,7 +45,7 @@
                     </div>
                     <div class="descriptionBox">
                         <div class="textBlock">
-                            Использование современных веб-технологии: <b>HTML5, CSS3, JavaScript</b> для Frontend и <b>Python, FastAPI, SQLite</b> для Backend.
+                            Использование современных веб-технологии: <b>HTML5, CSS3, JavaScript</b> для Frontend и <b>Python, FastAPI, PostgreSQL</b> для Backend.
                         </div>
                     </div>
                 </div>       
@@ -103,15 +103,15 @@
             if (token) {
                 menu.innerHTML = `
                     <li><a href="index.html">Главная</a></li>
-                    <li><a href="#">Контакты</a></li>
-                    <li><a href="#">Лабиринты</a></li>
-                    <li><a href="#">Статистика</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="maze.html">Лабиринты</a></li>
+                    <li><a href="statistics.html">Статистика</a></li>
                     <li><a href="#" onclick="logout()">Выйти</a></li>
                 `;
             } else {
                 menu.innerHTML = `
                     <li><a href="index.html">Главная</a></li>
-                    <li><a href="#">Контакты</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
                     <li><a href="#" onclick="openModal('login')">Вход</a></li>
                     <li><a href="#" onclick="openModal('register')">Регистрация</a></li>
                 `;
@@ -124,7 +124,7 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
 
             if (password !== confirmPassword) {
-                alert("Пароли не совпадают. Попробуйте снова.");
+                alert("Пароли не совпадают.");
                 return;
             }
 
@@ -155,7 +155,7 @@
                     updateNavigation();
                 })
                 .catch((error) => {
-                    console.error('Error:', error);
+                    console.error(error);
                 });
         }
 

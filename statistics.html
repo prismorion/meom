@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="static/image/icon.ico" type="image/ico">
+    <script src="static/js/toggleMenu.js"></script>
+    <script src="https://www.cbr-xml-daily.ru/money.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="static/image/logo.png" alt="MCHS Logo">
+                </div>
+            </div>
+            <nav>
+                <div class="menu-toggle" onclick="toggleMenu()"><h3><b>☰</b></h3></div>
+                <ul class="main-menu"></ul>
+            </nav>
+        </header>
+
+        <div class="main">
+            <div class="description">
+                <div class="descriptionTitle">
+                    <h2><b>Статистика по прохождению лабиринтов</b></h2>
+                </div>
+                <div class="descriptionText">
+                    <div class="descriptionBox">
+                        <div id="lastDifficulty" class="textBlock">Загрузка...</div>
+                    </div>
+                    <div class="descriptionBox">
+                        <div id="timeLast5" class="textBlock">Загрузка...</div>
+                    </div>
+                    <div class="descriptionBox">
+                        <div id="timeLast10" class="textBlock">Загрузка...</div>
+                    </div>
+                    <div class="descriptionBox">
+                        <div id="timeLast20" class="textBlock">Загрузка...</div>
+                    </div>
+                </div>       
+            </div>
+        </div>
+
+        <div class="footer">
+            &copy; 2024 Meom | Пономаренко Олег Александрович & Васильев Семен Дмитриевич
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+
+        function updateNavigation() {
+            const menu = document.querySelector('.main-menu');
+            if (token) {
+                menu.innerHTML = `
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="maze.html">Лабиринты</a></li>
+                    <li><a href="statistics.html">Статистика</a></li>
+                    <li><a href="#" onclick="logout()">Выйти</a></li>
+                `;
+            } else {
+                menu.innerHTML = `
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="#" onclick="openModal('login')">Вход</a></li>
+                    <li><a href="#" onclick="openModal('register')">Регистрация</a></li>
+                `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            updateNavigation();
+            window.location = 'index.html';
+        }
+
+        function loadStatistics() {
+            function displayStat(id, lastCount) {
+                timeLast(lastCount)
+                    .then(data => {
+                        if (lastCount === 1) {
+                            document.getElementById(id).innerText = `Время последней игры: ${Math.round(data * 10) / 10} сек`;
+                        } else {
+                            document.getElementById(id).innerText = `Среднее время (${lastCount} игр): ${Math.round(data * 10) / 10} сек`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        document.getElementById(id).innerText = 'Ошибка загрузки данных';
+                    });
+            }
+
+            displayStat('lastDifficulty', 1);
+            displayStat('timeLast5', 5);
+            displayStat('timeLast10', 10);
+            displayStat('timeLast20', 20);
+        }
+
+        window.onload = () => {
+            updateNavigation();
+            loadStatistics();
+        };
+
+        function timeLast(d) {
+            return fetch(`http://127.0.0.1:8000/statistics?last_count=${d}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP error, status = ' + response.status);
+                }
+                return response.json();
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
